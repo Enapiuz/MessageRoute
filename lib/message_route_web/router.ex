@@ -20,7 +20,9 @@ defmodule MessageRouteWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", MessageRouteWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", MessageRouteWeb do
+    pipe_through :api
+
+    post "/send", SendController, :index
+  end
 end
