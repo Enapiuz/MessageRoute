@@ -2,7 +2,6 @@ defmodule MessageRoute.Receiver.RawMessage do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "raw_messages" do
     field :body, :string
     field :to, :string
