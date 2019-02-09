@@ -6,6 +6,7 @@ defmodule MessageRoute.Receiver.RawMessage do
     field :body, :string
     field :to, :string
     field :topic, :string
+    field :done, :boolean
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule MessageRoute.Receiver.RawMessage do
   @doc false
   def changeset(raw_message, attrs) do
     raw_message
-    |> cast(attrs, [:topic, :body, :to])
+    |> cast(attrs, [:topic, :body, :to, :done])
     |> validate_required([:topic, :body, :to])
   end
 end

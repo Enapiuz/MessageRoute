@@ -6,9 +6,9 @@ defmodule MessageRoute.ReceiverTest do
   describe "raw_messages" do
     alias MessageRoute.Receiver.RawMessage
 
-    @valid_attrs %{body: "some body", to: "some to", topic: "some topic"}
-    @update_attrs %{body: "some updated body", to: "some updated to", topic: "some updated topic"}
-    @invalid_attrs %{body: nil, to: nil, topic: nil}
+    @valid_attrs %{body: "some body", to: "some to", topic: "some topic", done: false}
+    @update_attrs %{body: "some updated body", to: "some updated to", topic: "some updated topic", done: true}
+    @invalid_attrs %{body: nil, to: nil, topic: nil, done: nil}
 
     def raw_message_fixture(attrs \\ %{}) do
       {:ok, raw_message} =
@@ -34,6 +34,7 @@ defmodule MessageRoute.ReceiverTest do
       assert raw_message.body == "some body"
       assert raw_message.to == "some to"
       assert raw_message.topic == "some topic"
+      assert raw_message.done == false
     end
 
     test "create_raw_message/1 with invalid data returns error changeset" do
@@ -46,6 +47,7 @@ defmodule MessageRoute.ReceiverTest do
       assert raw_message.body == "some updated body"
       assert raw_message.to == "some updated to"
       assert raw_message.topic == "some updated topic"
+      assert raw_message.done == true
     end
 
     test "update_raw_message/2 with invalid data returns error changeset" do

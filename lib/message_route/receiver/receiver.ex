@@ -1,21 +1,16 @@
 defmodule MessageRoute.Receiver do
   @moduledoc """
   The Receiver context.
-  Stores raw messages and sends them to the preparer context.
+  Stores raw messages and sends them to the exchange context.
+
+  TODO: rename this context
   """
 
   import Ecto.Query, warn: false
   alias MessageRoute.Repo
 
-  alias MessageRoute.Preparer
+  alias MessageRoute.Exchange
   alias MessageRoute.Receiver.RawMessage
-
-  @doc """
-  Sends raw message to message prepare system.
-  """
-  def send_to_prepare_system(%RawMessage{} = raw_message) do
-    Preparer.prepare(raw_message)
-  end
 
   @doc """
   Returns the list of raw_messages.
@@ -59,12 +54,15 @@ defmodule MessageRoute.Receiver do
 
   """
   def create_raw_message(attrs \\ %{}) do
-    result = %RawMessage{}
+    %RawMessage{}
     |> RawMessage.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def send_raw_message(result) do
     case result do
       {:ok, message} ->
-        send_to_prepare_system(message)
+        Exchange.push(message)
         result
       _ -> result
     end
@@ -86,6 +84,19 @@ defmodule MessageRoute.Receiver do
     raw_message
     |> RawMessage.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Marks message as sent.
+
+  ## Examples
+
+      iex> mark_raw_message_sent(raw_message)
+      {:ok, %RawMessage{done: true}}
+
+  """
+  def mark_raw_message_sent(%RawMessage{} = message) do
+    update_raw_message(message, %{done: true})
   end
 
   @doc """

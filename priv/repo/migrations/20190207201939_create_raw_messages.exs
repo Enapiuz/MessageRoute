@@ -6,6 +6,7 @@ defmodule MessageRoute.Repo.Migrations.CreateRawMessages do
       add :topic, :string
       add :body, :string
       add :to, :string
+      add :done, :boolean, default: false
 
       timestamps()
     end
