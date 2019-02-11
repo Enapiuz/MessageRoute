@@ -1,4 +1,4 @@
-defmodule MessageRoute.Receiver.RawMessage do
+defmodule MessageRoute.Messages.RawMessage do
   use Ecto.Schema
   import Ecto.Changeset
 

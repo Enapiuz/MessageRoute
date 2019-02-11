@@ -2,13 +2,15 @@ defmodule MessageRoute.Exchange do
   @moduledoc """
   The Exchange context.
 
-  Gets raw messages from the Receiver context and
+  Gets raw messages from the Messages context and
   prepares them for send into concrete chanel.
   """
 
+  require Logger
+
   alias MessageRoute.Accounts
-  alias MessageRoute.Receiver
-  alias MessageRoute.Receiver.RawMessage
+  alias MessageRoute.Messages
+  alias MessageRoute.Messages.RawMessage
   alias MessageRoute.Exchange.Command
   alias MessageRoute.SlackChannel
 
@@ -17,13 +19,18 @@ defmodule MessageRoute.Exchange do
   then sends it to concrete channel send queue.
   """
   def push(%RawMessage{to: email, topic: topic, body: body} = message) do
-    %Command{success: false}
-    |> get_user(email)
-    |> get_channel(topic)
-    |> validate_user_subscription()
-    |> prepare_body(body)
-    |> send()
-    |> log_changes(message)
+    with(
+      {:ok, command} <- get_user(%Command{}, email),
+      {:ok, command} <- get_channel(command, topic),
+      {:ok, command} <- validate_user_subscription(command),
+      {:ok, command} <- prepare_body(command, body),
+      {:ok, command} <- send(command)
+    ) do
+      log_changes(:ok, command, message)
+    else
+      {status, command} ->
+        log_changes(status, command, message)
+    end
   end
 
   defp get_user(%Command{} = command, email) do
@@ -31,31 +38,35 @@ defmodule MessageRoute.Exchange do
     {:ok, %{command | user: user}}
   end
 
-  defp get_channel({:ok, %Command{} = command}, _topic) do
+  defp get_channel(%Command{} = command, _topic) do
     {:ok, %{command | channel: :slack}}
   end
 
-  defp validate_user_subscription({:ok, %Command{} = command}) do
+  defp validate_user_subscription(%Command{} = command) do
     {:ok, command}
   end
 
-  defp prepare_body({:ok, %Command{} = command}, body) do
+  defp prepare_body(%Command{} = command, body) do
     {:ok, %{command | body: body}}
   end
 
-  defp send({:ok, %Command{channel: channel} = command}) do
+  defp send(%Command{channel: channel} = command) do
     case channel do
       :slack -> SlackChannel.send(command)
+      _ -> {:error, command}
     end
   end
 
-  defp log_changes({_status, %Command{success: success} = command}, %RawMessage{} = message) do
-    IO.inspect command
-    case success do
-      true ->
-        IO.puts("Message successfully sent!")
-        Receiver.mark_raw_message_sent(message)
-      _ -> IO.puts("Error sending message")
+  defp log_changes(status, %Command{} = command, %RawMessage{} = message) do
+    case status do
+      :ok ->
+        Messages.mark_raw_message_sent(message)
+        Logger.info "Message id##{message.id} sent"
+        {:ok, command}
+
+      _ ->
+        Logger.info "Error sending message id##{message.id}"
+        {:error, command}
     end
   end
 end

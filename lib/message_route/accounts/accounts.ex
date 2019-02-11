@@ -47,7 +47,9 @@ defmodule MessageRoute.Accounts do
       nil ->
         {:ok, user} = create_user(%{email: email})
         user
-      user -> user
+
+      user ->
+        user
     end
   end
 
