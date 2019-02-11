@@ -23,33 +23,33 @@ defmodule MessageRoute.Exchange do
     |> validate_user_subscription()
     |> prepare_body(body)
     |> send()
-    |> mark_message_as_sent(message)
+    |> log_changes(message)
   end
 
   defp get_user(%Command{} = command, email) do
     user = Accounts.get_or_create_user_by_email(email)
-    %{command | user: user}
+    {:ok, %{command | user: user}}
   end
 
-  defp get_channel(%Command{} = command, _topic) do
-    %{command | channel: :slack}
+  defp get_channel({:ok, %Command{} = command}, _topic) do
+    {:ok, %{command | channel: :slack}}
   end
 
-  defp validate_user_subscription(%Command{} = command) do
-    command
+  defp validate_user_subscription({:ok, %Command{} = command}) do
+    {:ok, command}
   end
 
-  defp prepare_body(%Command{} = command, body) do
-    %{command | body: body}
+  defp prepare_body({:ok, %Command{} = command}, body) do
+    {:ok, %{command | body: body}}
   end
 
-  defp send(%Command{channel: channel} = command) do
+  defp send({:ok, %Command{channel: channel} = command}) do
     case channel do
       :slack -> SlackChannel.send(command)
     end
   end
 
-  defp mark_message_as_sent(%Command{success: success} = command, %RawMessage{} = message) do
+  defp log_changes({_status, %Command{success: success} = command}, %RawMessage{} = message) do
     IO.inspect command
     case success do
       true ->
