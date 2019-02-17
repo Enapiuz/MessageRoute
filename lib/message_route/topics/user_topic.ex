@@ -4,8 +4,9 @@ defmodule MessageRoute.Topics.UserTopic do
 
   schema "user_topics" do
     field :subscribed, :boolean, default: false
-    field :user_id, :id
-    field :topic_id, :id
+    field :channel, :string
+    belongs_to :user, MessageRoute.Accounts.User
+    belongs_to :topic, MessageRoute.Topics.Topic
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule MessageRoute.Topics.UserTopic do
   @doc false
   def changeset(user_topic, attrs) do
     user_topic
-    |> cast(attrs, [:subscribed])
-    |> validate_required([:subscribed])
+    |> cast(attrs, [:subscribed, :channel])
+    |> validate_required([:subscribed, :channel])
   end
 end

@@ -19,6 +19,7 @@ defmodule MessageRoute.Accounts do
   """
   def list_users do
     Repo.all(User)
+    |> Repo.preload([:topics])
   end
 
   @doc """
@@ -39,6 +40,7 @@ defmodule MessageRoute.Accounts do
 
   def get_user_by_email(email) do
     Repo.get_by(User, email: email)
+    |> Repo.preload([{:topics, :topic}])
   end
 
   @spec get_or_create_user_by_email(String.t()) :: User
@@ -66,7 +68,7 @@ defmodule MessageRoute.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
+    %User{topics: []}
     |> User.changeset(attrs)
     |> Repo.insert()
   end

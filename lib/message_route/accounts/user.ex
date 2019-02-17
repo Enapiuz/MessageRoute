@@ -4,6 +4,7 @@ defmodule MessageRoute.Accounts.User do
 
   schema "users" do
     field :email, :string
+    has_many :topics, MessageRoute.Topics.UserTopic
 
     timestamps()
   end

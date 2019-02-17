@@ -11,8 +11,6 @@ defmodule MessageRoute.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
@@ -46,7 +44,6 @@ defmodule MessageRoute.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:gen_stage, "~> 0.14.1"},
-      {:excoveralls, "~> 0.10", only: :test},
       {:slack, "~> 0.14.0"},
     ]
   end

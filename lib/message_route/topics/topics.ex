@@ -37,6 +37,21 @@ defmodule MessageRoute.Topics do
   """
   def get_topic!(id), do: Repo.get!(Topic, id)
 
+  def get_topic_by_name(name) do
+    Repo.get_by(Topic, name: name)
+  end
+
+  def get_or_create_topic_by_name(name) do
+    case get_topic_by_name(name) do
+      nil ->
+        {:ok, topic} = create_topic(%{name: name})
+        topic
+
+      topic ->
+        topic
+    end
+  end
+
   @doc """
   Creates a topic.
 
@@ -52,7 +67,7 @@ defmodule MessageRoute.Topics do
   def create_topic(attrs \\ %{}) do
     %Topic{}
     |> Topic.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :replace_all)
   end
 
   @doc """
@@ -145,10 +160,10 @@ defmodule MessageRoute.Topics do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user_topic(attrs \\ %{}) do
-    %UserTopic{}
+  def create_user_topic(attrs \\ %{}, user, topic) do
+    %UserTopic{user: user, topic: topic}
     |> UserTopic.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :nothing)
   end
 
   @doc """
