@@ -72,7 +72,6 @@ defmodule MessageRoute.Exchange do
   end
 
   defp get_topic_subscription(topics, topic_name) do
-    # Logger.debug "#{inspect topics}"
     topic =
       topics
       |> Enum.filter(fn topic ->

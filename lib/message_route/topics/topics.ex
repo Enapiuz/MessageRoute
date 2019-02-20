@@ -67,7 +67,7 @@ defmodule MessageRoute.Topics do
   def create_topic(attrs \\ %{}) do
     %Topic{}
     |> Topic.changeset(attrs)
-    |> Repo.insert(on_conflict: :replace_all)
+    |> Repo.insert(on_conflict: :nothing)
   end
 
   @doc """
@@ -130,6 +130,7 @@ defmodule MessageRoute.Topics do
   """
   def list_user_topics do
     Repo.all(UserTopic)
+    |> Repo.preload([:topic, :user])
   end
 
   @doc """
@@ -146,7 +147,10 @@ defmodule MessageRoute.Topics do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user_topic!(id), do: Repo.get!(UserTopic, id)
+  def get_user_topic!(id) do
+    Repo.get!(UserTopic, id)
+    |> Repo.preload([:topic, :user])
+  end
 
   @doc """
   Creates a user_topic.

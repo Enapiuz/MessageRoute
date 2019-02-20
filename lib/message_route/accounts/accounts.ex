@@ -19,7 +19,7 @@ defmodule MessageRoute.Accounts do
   """
   def list_users do
     Repo.all(User)
-    |> Repo.preload([:topics])
+    |> Repo.preload([{:topics, :topic}])
   end
 
   @doc """
@@ -36,7 +36,10 @@ defmodule MessageRoute.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    Repo.get!(User, id)
+    |> Repo.preload([{:topics, :topic}])
+  end
 
   def get_user_by_email(email) do
     Repo.get_by(User, email: email)

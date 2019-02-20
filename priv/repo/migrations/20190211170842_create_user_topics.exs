@@ -11,8 +11,6 @@ defmodule MessageRoute.Repo.Migrations.CreateUserTopics do
       timestamps()
     end
 
-    create index(:user_topics, [:user_id])
-    create index(:user_topics, [:topic_id])
     create unique_index(:user_topics, [:user_id, :topic_id])
   end
 end

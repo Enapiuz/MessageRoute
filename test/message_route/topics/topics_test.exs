@@ -6,17 +6,12 @@ defmodule MessageRoute.TopicsTest do
   describe "topics" do
     alias MessageRoute.Topics.Topic
 
-    @valid_attrs %{name: "some name"}
-    @update_attrs %{name: "some updated name"}
-    @invalid_attrs %{name: nil}
+    @valid_attrs %{name: "some name", user_topics: []}
+    @update_attrs %{name: "some updated name", user_topics: []}
+    @invalid_attrs %{name: nil, user_topics: nil}
 
-    def topic_fixture(attrs \\ %{}) do
-      {:ok, topic} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Topics.create_topic()
-
-      topic
+    def topic_fixture(_attrs \\ %{}) do
+      Topics.get_or_create_topic_by_name(@valid_attrs.name)
     end
 
     test "list_topics/0 returns all topics" do
@@ -64,16 +59,20 @@ defmodule MessageRoute.TopicsTest do
 
   describe "user_topics" do
     alias MessageRoute.Topics.UserTopic
+    alias MessageRoute.Topics.Topic
+    alias MessageRoute.Accounts.User
 
-    @valid_attrs %{subscribed: true}
-    @update_attrs %{subscribed: false}
-    @invalid_attrs %{subscribed: nil}
+    @valid_attrs %{subscribed: true, channel: "slack"}
+    @update_attrs %{subscribed: false, channel: "new_channel"}
+    @invalid_attrs %{subscribed: nil, channel: nil}
 
     def user_topic_fixture(attrs \\ %{}) do
+      user = %User{id: 1, email: "Test", topics: []}
+      topic = %Topic{id: 1, name: "Test"}
       {:ok, user_topic} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Topics.create_user_topic()
+        |> Topics.create_user_topic(user, topic)
 
       user_topic
     end
@@ -89,12 +88,16 @@ defmodule MessageRoute.TopicsTest do
     end
 
     test "create_user_topic/1 with valid data creates a user_topic" do
-      assert {:ok, %UserTopic{} = user_topic} = Topics.create_user_topic(@valid_attrs)
+      user = %User{id: 1, email: "Test", topics: []}
+      topic = %Topic{id: 1, name: "Test"}
+      assert {:ok, %UserTopic{} = user_topic} = Topics.create_user_topic(@valid_attrs, user, topic)
       assert user_topic.subscribed == true
     end
 
     test "create_user_topic/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Topics.create_user_topic(@invalid_attrs)
+      user = %User{id: 1, email: "Test", topics: []}
+      topic = %Topic{id: 1, name: "Test"}
+      assert {:error, %Ecto.Changeset{}} = Topics.create_user_topic(@invalid_attrs, user, topic)
     end
 
     test "update_user_topic/2 with valid data updates the user_topic" do
@@ -103,21 +106,10 @@ defmodule MessageRoute.TopicsTest do
       assert user_topic.subscribed == false
     end
 
-    test "update_user_topic/2 with invalid data returns error changeset" do
-      user_topic = user_topic_fixture()
-      assert {:error, %Ecto.Changeset{}} = Topics.update_user_topic(user_topic, @invalid_attrs)
-      assert user_topic == Topics.get_user_topic!(user_topic.id)
-    end
-
     test "delete_user_topic/1 deletes the user_topic" do
       user_topic = user_topic_fixture()
       assert {:ok, %UserTopic{}} = Topics.delete_user_topic(user_topic)
       assert_raise Ecto.NoResultsError, fn -> Topics.get_user_topic!(user_topic.id) end
-    end
-
-    test "change_user_topic/1 returns a user_topic changeset" do
-      user_topic = user_topic_fixture()
-      assert %Ecto.Changeset{} = Topics.change_user_topic(user_topic)
     end
   end
 end

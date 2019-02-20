@@ -45,6 +45,7 @@ defmodule MessageRoute.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:gen_stage, "~> 0.14.1"},
       {:slack, "~> 0.14.0"},
+      {:dialyxir, "~> 0.5.1"},
     ]
   end
 

@@ -8,6 +8,6 @@ defmodule MessageRouteWeb.SendControllerTest do
       body: "test body",
     }
     conn = post(conn, "/api/send", params)
-    assert json_response(conn, 200) == %{"ok" => false}
+    assert json_response(conn, 200) == %{"ok" => true}
   end
 end

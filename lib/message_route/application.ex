@@ -11,9 +11,10 @@ defmodule MessageRoute.Application do
       # Start the Ecto repository
       MessageRoute.Repo,
       # Start the endpoint when the application starts
-      MessageRouteWeb.Endpoint
+      MessageRouteWeb.Endpoint,
       # Starts a worker by calling: MessageRoute.Worker.start_link(arg)
       # {MessageRoute.Worker, arg},
+      MessageRoute.Settings.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
