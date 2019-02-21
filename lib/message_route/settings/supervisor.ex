@@ -7,7 +7,7 @@ defmodule MessageRoute.Settings.Supervisor do
 
   def init(:ok) do
     children = [
-      worker(MessageRoute.Settings.Cache, [])
+      worker(MessageRoute.Settings.Storage, [])
     ]
 
     supervise(children, strategy: :one_for_one)

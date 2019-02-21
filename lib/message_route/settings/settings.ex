@@ -7,11 +7,11 @@ defmodule MessageRoute.Settings do
   alias MessageRoute.Repo
 
   alias MessageRoute.Settings.Entry
-  alias MessageRoute.Settings.Cache
+  alias MessageRoute.Settings.Storage
 
   @spec get(String.t()) :: {:error} | {:ok, any()}
   def get(name) when is_bitstring(name) do
-    Cache.get(name)
+    Storage.get(name)
   end
 
   @spec set(String.t(), any()) :: any()
@@ -19,11 +19,11 @@ defmodule MessageRoute.Settings do
     encoded_value = :erlang.term_to_binary(value)
     %{name: name, value: encoded_value}
     |> create_entry()
-    Cache.set(name, value)
+    Storage.set(name, value)
   end
 
   @doc """
-  Returns the list of settings.
+  jeturns the list of settings.
 
   ## Examples
 
@@ -67,24 +67,6 @@ defmodule MessageRoute.Settings do
     %Entry{}
     |> Entry.changeset(attrs)
     |> Repo.insert(on_conflict: {:replace, [:value]}, conflict_target: :name)
-  end
-
-  @doc """
-  Updates a entry.
-
-  ## Examples
-
-      iex> update_entry(entry, %{field: new_value})
-      {:ok, %Entry{}}
-
-      iex> update_entry(entry, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_entry(%Entry{} = entry, attrs) do
-    entry
-    |> Entry.changeset(attrs)
-    |> Repo.update()
   end
 
   @doc """

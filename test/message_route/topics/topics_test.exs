@@ -60,31 +60,24 @@ defmodule MessageRoute.TopicsTest do
   describe "user_topics" do
     alias MessageRoute.Topics.UserTopic
     alias MessageRoute.Topics.Topic
+    alias MessageRoute.Topics
     alias MessageRoute.Accounts.User
+    alias MessageRoute.Accounts
 
     @valid_attrs %{subscribed: true, channel: "slack"}
     @update_attrs %{subscribed: false, channel: "new_channel"}
     @invalid_attrs %{subscribed: nil, channel: nil}
 
-    def user_topic_fixture(attrs \\ %{}) do
-      user = %User{id: 1, email: "Test", topics: []}
-      topic = %Topic{id: 1, name: "Test"}
+    def user_topic_fixture(email \\ nil, attrs \\ %{}) do
+      user_email = if is_bitstring(email), do: email, else: "test@email.com"
+      user = Accounts.get_or_create_user_by_email(user_email)
+      topic = Topics.get_or_create_topic_by_name("test topic")
       {:ok, user_topic} =
         attrs
         |> Enum.into(@valid_attrs)
         |> Topics.create_user_topic(user, topic)
 
       user_topic
-    end
-
-    test "list_user_topics/0 returns all user_topics" do
-      user_topic = user_topic_fixture()
-      assert Topics.list_user_topics() == [user_topic]
-    end
-
-    test "get_user_topic!/1 returns the user_topic with given id" do
-      user_topic = user_topic_fixture()
-      assert Topics.get_user_topic!(user_topic.id) == user_topic
     end
 
     test "create_user_topic/1 with valid data creates a user_topic" do

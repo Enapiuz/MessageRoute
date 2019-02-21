@@ -7,7 +7,7 @@ defmodule MessageRoute.SettingsTest do
     alias MessageRoute.Settings.Entry
 
     @valid_attrs %{name: "test", value: "some value"}
-    @update_attrs %{name: "updated_test", value: "some updated value"}
+    @update_attrs %{name: "test", value: "some updated value"}
     @invalid_attrs %{name: nil, value: nil}
 
     def entry_fixture(attrs \\ %{}) do
@@ -34,20 +34,13 @@ defmodule MessageRoute.SettingsTest do
       assert entry.value == "some value"
     end
 
+    test "creeate_entry/1 with different data updates a entry" do
+      assert {:ok, %Entry{} = entry} = Settings.create_entry(@update_attrs)
+      assert entry.value == @update_attrs.value
+    end
+
     test "create_entry/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Settings.create_entry(@invalid_attrs)
-    end
-
-    test "update_entry/2 with valid data updates the entry" do
-      entry = entry_fixture()
-      assert {:ok, %Entry{} = entry} = Settings.update_entry(entry, @update_attrs)
-      assert entry.value == "some updated value"
-    end
-
-    test "update_entry/2 with invalid data returns error changeset" do
-      entry = entry_fixture()
-      assert {:error, %Ecto.Changeset{}} = Settings.update_entry(entry, @invalid_attrs)
-      assert entry == Settings.get_entry!(entry.id)
     end
 
     test "delete_entry/1 deletes the entry" do

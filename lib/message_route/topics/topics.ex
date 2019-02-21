@@ -120,20 +120,6 @@ defmodule MessageRoute.Topics do
   alias MessageRoute.Topics.UserTopic
 
   @doc """
-  Returns the list of user_topics.
-
-  ## Examples
-
-      iex> list_user_topics()
-      [%UserTopic{}, ...]
-
-  """
-  def list_user_topics do
-    Repo.all(UserTopic)
-    |> Repo.preload([:topic, :user])
-  end
-
-  @doc """
   Gets a single user_topic.
 
   Raises `Ecto.NoResultsError` if the User topic does not exist.
@@ -149,7 +135,7 @@ defmodule MessageRoute.Topics do
   """
   def get_user_topic!(id) do
     Repo.get!(UserTopic, id)
-    |> Repo.preload([:topic, :user])
+    |> Repo.preload([:topic, {:user, :topics}])
   end
 
   @doc """

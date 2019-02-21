@@ -71,9 +71,17 @@ defmodule MessageRoute.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{topics: []}
+    result = %User{topics: []}
     |> User.changeset(attrs)
     |> Repo.insert()
+
+    case result do
+      {:ok, user} ->
+        {:ok, Repo.preload(user, :topics)}
+
+      other ->
+        other
+    end
   end
 
   @doc """

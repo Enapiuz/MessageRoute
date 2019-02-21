@@ -1,4 +1,4 @@
-defmodule MessageRoute.Settings.Cache do
+defmodule MessageRoute.Settings.Storage do
   use GenServer
 
   alias MessageRoute.Settings
