@@ -5,7 +5,6 @@ defmodule MessageRoute.Topics.Topic do
 
   schema "topics" do
     field :name, :string
-    # has_many :user_topics, MessageRoute.Topics.UserTopic
 
     timestamps()
   end
