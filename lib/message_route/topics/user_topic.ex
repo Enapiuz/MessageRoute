@@ -15,6 +15,8 @@ defmodule MessageRoute.Topics.UserTopic do
   def changeset(user_topic, attrs) do
     user_topic
     |> cast(attrs, [:subscribed, :channel])
+    |> cast_assoc(:user, require: true, with: &MessageRoute.Accounts.User.changeset/2)
+    |> cast_assoc(:topic, required: true, with: &MessageRoute.Topics.Topic.changeset/2)
     |> validate_required([:subscribed, :channel])
   end
 end

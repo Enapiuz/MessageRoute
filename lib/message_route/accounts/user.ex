@@ -13,6 +13,7 @@ defmodule MessageRoute.Accounts.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email])
+    |> cast_assoc(:topics, required: false, with: &MessageRoute.Topics.UserTopic.changeset/2)
     |> validate_required([:email])
   end
 end

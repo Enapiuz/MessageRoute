@@ -17,6 +17,8 @@ defmodule MessageRouteWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/user", UserController, :index
+    put "/user", UserController, :update
   end
 
   # Other scopes may use custom stacks.

@@ -50,7 +50,7 @@ defmodule MessageRoute.Accounts do
   def get_or_create_user_by_email(email) do
     case get_user_by_email(email) do
       nil ->
-        {:ok, user} = create_user(%{email: email})
+        {:ok, user} = create_user(%{email: email, topics: []})
         user
 
       user ->

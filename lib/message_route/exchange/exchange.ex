@@ -3,7 +3,7 @@ defmodule MessageRoute.Exchange do
   The Exchange context.
 
   Gets raw messages from the Messages context and
-  prepares them for send into concrete chanel.
+  prepares them for send into concrete channel.
   """
 
   require Logger

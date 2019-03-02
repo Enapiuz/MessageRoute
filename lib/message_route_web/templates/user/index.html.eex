@@ -1,0 +1,19 @@
+<h1>User config</h1>
+<%= form_for @changeset, Routes.user_path(@conn, :update), fn f -> %>
+  <%= hidden_input f, :id %>
+  <%= hidden_input f, :email %>
+  <h3>User email: <small><%= @changeset.data.email %></small></h3>
+  <ul style="list-style-type: none">
+    <%= inputs_for f, :topics, fn t -> %>
+      <label>
+        <%= checkbox t, :subscribed %>
+        <span>
+          <%= t.data.topic.name %>
+          -
+          <%= t.data.channel%>
+        </span>
+      </label>
+    <% end %>
+  </ul>
+  <button name="button" type="submit">Save changes</button>
+<% end %>
