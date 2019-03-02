@@ -1,5 +1,7 @@
 # MessageRoute
 
+[![Build Status](https://travis-ci.org/Enapiuz/MessageRoute.svg?branch=master)](https://travis-ci.org/Enapiuz/MessageRoute)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
