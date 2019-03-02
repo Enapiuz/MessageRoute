@@ -1,1 +1,1 @@
-<script type="text/javascript" src="<%= Routes.static_url(@conn, "/js/app.js") %>"></script>
+<h1>Message Route</h1>
