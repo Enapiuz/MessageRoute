@@ -1,1 +1,7 @@
 <h1>Message Route</h1>
+
+<%= form_for @conn, Routes.page_path(@conn, :update_token), fn f -> %>
+  <%= label :data, :token, "Slack Token" %>
+  <%= text_input :data, :token, value: @token %>
+  <button type="submit">Save config</button>
+<% end %>

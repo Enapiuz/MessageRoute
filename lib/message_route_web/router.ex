@@ -17,6 +17,7 @@ defmodule MessageRouteWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    post "/update_slack_token", PageController, :update_token
     get "/user", UserController, :index
     put "/user", UserController, :update
   end
