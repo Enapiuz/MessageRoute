@@ -17,7 +17,7 @@ defmodule MessageRoute.SlackChannel do
         Logger.error("Error calling slack api", error)
         {:error, command}
 
-    {:error, :token_not_set} ->
+      {:error, :token_not_set} ->
         Logger.error("Slack API token not set")
         {:error, command}
 

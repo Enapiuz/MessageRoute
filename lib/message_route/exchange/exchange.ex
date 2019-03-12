@@ -25,7 +25,7 @@ defmodule MessageRoute.Exchange do
       {:ok, command} <- get_channel(command, topic),
       {:ok, command} <- validate_user_subscription(command, topic),
       {:ok, command} <- prepare_body(command, body),
-      {:ok, command} <- send(command)
+      {:ok, command} <- send_command(command)
     ) do
       log_changes(:ok, command, message)
     else
@@ -104,10 +104,12 @@ defmodule MessageRoute.Exchange do
   end
 
   defp prepare_body(%Command{} = command, body) do
-    {:ok, %{command | body: body}}
+    url = MessageRouteWeb.Endpoint.url()
+    newBody = body <> "\n <#{url}/user?email=#{command.user.email}|Subscription config>"
+    {:ok, %{command | body: newBody}}
   end
 
-  defp send(%Command{channel: channel} = command) do
+  defp send_command(%Command{channel: channel} = command) do
     case channel do
       :slack -> SlackChannel.send(command)
       _ -> {:error, command}
